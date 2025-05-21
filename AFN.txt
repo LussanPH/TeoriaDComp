@@ -1,0 +1,11 @@
+#AFN Original
+Q: A, S, qF
+Sigma: A, S, a, b
+q0: S
+delta:
+  (S, a) -> qF
+  (S, A) -> qF
+  (A, b) -> qF
+  (A, S) -> qF
+  (S, e) -> qF
+F: qF

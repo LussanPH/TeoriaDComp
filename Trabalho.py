@@ -22,25 +22,24 @@ for linha in linhas:
 
     afn["Q"].add(origem)
 
-    for prod in producoes:
-        if prod == 'e':
-            estado_final = "qF"
-            afn["Q"].add(estado_final)
-            afn["F"].add(estado_final)
-            afn["delta"].setdefault((origem, 'e'), set()).add(estado_final)
-        elif len(prod) == 2:
-            simbolo = prod[0]
-            destino = prod[1]
-            afn["Sigma"].add(simbolo)
-            afn["Q"].add(destino)
-            afn["delta"].setdefault((origem, simbolo), set()).add(destino)
-        elif len(prod) == 1:
-            simbolo = prod
-            estado_final = "qF"
-            afn["Q"].add(estado_final)
-            afn["F"].add(estado_final)
-            afn["Sigma"].add(simbolo)
-            afn["delta"].setdefault((origem, simbolo), set()).add(estado_final)
+    if producoes == 'e':
+        estado_final = "qF"
+        afn["Q"].add(estado_final)
+        afn["F"].add(estado_final)
+        afn["delta"].setdefault((origem, 'e'), set()).add(estado_final)
+    elif len(producoes) == 2:
+        simbolo = producoes[0]
+        destino = producoes[1]
+        afn["Sigma"].add(simbolo)
+        afn["Q"].add(destino)
+        afn["delta"].setdefault((origem, simbolo), set()).add(destino)
+    elif len(producoes) == 1:
+        simbolo = producoes
+        estado_final = "qF"
+        afn["Q"].add(estado_final)
+        afn["F"].add(estado_final)
+        afn["Sigma"].add(simbolo)
+        afn["delta"].setdefault((origem, simbolo), set()).add(estado_final)
 
 with open(saida, "w") as f:
     f.write("#AFN Original\n")
@@ -51,6 +50,4 @@ with open(saida, "w") as f:
     for (estado, simbolo), destinos in afn["delta"].items():
         for destino in destinos:
             f.write(f"  ({estado}, {simbolo}) -> {destino}\n")
-    f.write("F: " + ", ".join(sorted(afn["F"])) + "\n")        
-
-print("Conversão concluída! Arquivo AFN.txt gerado.")
+    f.write("F: " + ", ".join(sorted(afn["F"])) + "\n")       

@@ -1,0 +1,14 @@
+#AFD Gerado a partir de AFN com e-transi��es
+Q: Dead, q0, q1, q2
+Sigma: a, b
+q0: q0
+delta:
+  (q0, a) -> q1
+  (q0, b) -> Dead
+  (q1, a) -> q1
+  (q1, b) -> q2
+  (q2, a) -> Dead
+  (q2, b) -> Dead
+  (Dead, a) -> Dead
+  (Dead, b) -> Dead
+F: q0, q2

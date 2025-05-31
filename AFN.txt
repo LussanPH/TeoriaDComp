@@ -1,9 +1,12 @@
 #AFN Original
-Q: A, S, qF
+Q: q0, q1, q2, qF
 Sigma: a, b
-q0: S
+q0: q0
 delta:
-  (S, a) -> A
-  (A, b) -> S
-  (S, e) -> qF
+  (q0, a) -> q1
+  (q0, e) -> qF
+  (q1, a) -> q1
+  (q1, b) -> q2
+  (q1, b) -> qF
+  (q2, e) -> qF
 F: qF

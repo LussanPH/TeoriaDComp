@@ -1,0 +1,12 @@
+#AFD Complementar
+Q: Dead, q0, q1
+Sigma: a, b
+q0: q0
+delta:
+  (q0, b) -> Dead
+  (q0, a) -> q1
+  (q1, b) -> q0
+  (q1, a) -> Dead
+  (Dead, b) -> Dead
+  (Dead, a) -> Dead
+F: Dead, q1

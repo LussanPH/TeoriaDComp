@@ -1,0 +1,13 @@
+#AFN Reverso (linguagem reversa do AFD original)
+Q: Dead, q0, q1, qR
+Sigma: a, b
+q0: qR
+delta:
+  (Dead, a) -> Dead
+  (Dead, a) -> q1
+  (Dead, b) -> Dead
+  (Dead, b) -> q0
+  (q0, b) -> q1
+  (q1, a) -> q0
+  (qR, e) -> q0
+F: q0

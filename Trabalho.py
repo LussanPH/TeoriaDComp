@@ -177,6 +177,111 @@ def salvar_afd_em_arquivo(afd, caminho):
             f.write(f"  ({estado}, {simbolo}) -> {destino}\n")
         f.write("F: " + ", ".join(sorted(afd["F"])) + "\n")
 
-# 5. Executar tudo
+#5 verifica aceitação de cadeia no afd
+def verifica_afd(afd, entrada):
+    estado_atual = afd["q0"]  # Começa no estado inicial
+
+    for simbolo in entrada:
+        if simbolo not in afd["Sigma"]:
+            print(f"Símbolo inválido na entrada: '{simbolo}' não está no alfabeto.")
+            return False
+        chave = (estado_atual, simbolo)
+        if chave not in afd["delta"]:
+            print(f"Transição indefinida para ({estado_atual}, {simbolo}).")
+            return False
+        estado_atual = afd["delta"][chave]
+
+    if estado_atual in afd["F"]:
+        print(f"A entrada '{entrada}' foi aceita. Estado final: {estado_atual}")
+        return True
+    else:
+        print(f"A entrada '{entrada}' foi rejeitada. Estado final: {estado_atual}")
+        return False
+    
+#6 reverso  
+def reverso_afd(afd):
+    novo_afn = {
+        "Q": set(afd["Q"]),
+        "Sigma": set(afd["Sigma"]),
+        "delta": defaultdict(set),
+        "q0": "qR",  # novo estado inicial
+        "F": {afd["q0"]}  # estado final será o antigo estado inicial
+    }
+
+    novo_afn["Q"].add("qR")  # adiciona o novo estado inicial
+
+    # Transições invertidas
+    for (origem, simbolo), destino in afd["delta"].items():
+        novo_afn["delta"][(destino, simbolo)].add(origem)
+
+    # Transições epsilon do novo estado inicial para todos os antigos finais
+    for estado_final_antigo in afd["F"]:
+        novo_afn["delta"][("qR", 'e')].add(estado_final_antigo)
+
+    return novo_afn    
+
+def salvar_afn_em_arquivo(afn, caminho):
+    with open(caminho, "w") as f:
+        f.write("#AFN Reverso (linguagem reversa do AFD original)\n")
+        f.write("Q: " + ", ".join(sorted(afn["Q"])) + "\n")
+        f.write("Sigma: " + ", ".join(sorted(afn["Sigma"])) + "\n")
+        f.write("q0: " + afn["q0"] + "\n")
+        f.write("delta:\n")
+        for (estado, simbolo), destinos in sorted(afn["delta"].items()):
+            for destino in sorted(destinos):
+                f.write(f"  ({estado}, {simbolo}) -> {destino}\n")
+        f.write("F: " + ", ".join(sorted(afn["F"])) + "\n")
+
+#7 complemento
+def gerar_complemento_afd(afd):
+    # Primeiro, garantir que o AFD seja total
+    estados = afd["Q"]
+    alfabeto = afd["Sigma"]
+    delta = dict(afd["delta"])  # copia
+
+    # Adiciona estado "Dead" se necessário
+    for estado in estados:
+        for simbolo in alfabeto:
+            if (estado, simbolo) not in delta:
+                delta[(estado, simbolo)] = "Dead"
+
+    # Se "Dead" foi usado, completar suas transições
+    if any(dest == "Dead" for dest in delta.values()):
+        estados.add("Dead")
+        for simbolo in alfabeto:
+            delta[("Dead", simbolo)] = "Dead"
+
+    # O complemento inverte os estados finais
+    novos_finais = estados - afd["F"]
+
+    afd_complementar = {
+        "Q": estados,
+        "Sigma": alfabeto,
+        "q0": afd["q0"],
+        "F": novos_finais,
+        "delta": delta
+    }
+    return afd_complementar
+
+def salvar_complemento_em_arquivo(afd_comp, caminho="COMP.txt"):
+    with open(caminho, "w") as f:
+        f.write("#AFD Complementar\n")
+        f.write("Q: " + ", ".join(sorted(afd_comp["Q"])) + "\n")
+        f.write("Sigma: " + ", ".join(sorted(afd_comp["Sigma"])) + "\n")
+        f.write("q0: " + afd_comp["q0"] + "\n")
+        f.write("delta:\n")
+        for (estado, simbolo), destino in afd_comp["delta"].items():
+            f.write(f"  ({estado}, {simbolo}) -> {destino}\n")
+        f.write("F: " + ", ".join(sorted(afd_comp["F"])) + "\n")        
+
+
+
+# 8. Executar tudo
 afd = afn_para_afd(afn)
-salvar_afd_em_arquivo(afd, "AFD.txt")     
+salvar_afd_em_arquivo(afd, "AFD.txt")
+reverso = reverso_afd(afd)
+salvar_afn_em_arquivo(reverso, "REV.txt")  
+afd_complementar = gerar_complemento_afd(afd)
+salvar_complemento_em_arquivo(afd_complementar, "COMP.txt") 
+entrada_usuario = input("Digite a cadeia de entrada: ").strip()
+verifica_afd(afd, entrada_usuario)  

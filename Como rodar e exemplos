@@ -1,0 +1,25 @@
+Para executar o programa basta rodar o arquivo tarefa.py 
+
+Adicione gramaticas no seguinte formato no arquivo GLUD.txt :
+
+-qualquer combinação de a's e b's e vazio
+#Gramática: G = ({S, A}, {a, b}, P, S)
+S -> aS | bS | e 
+
+#ex de cadeias para teste: '',a,b,aabbb,ababababab
+
+
+
+- numero par de a's e qualquer quantidade de b's
+#Gramática: G = ({S, A}, {a, b}, P, S)
+S -> bS | aA | e 
+A -> bA | aS
+#ex de cadeias para teste: '',aa,aaabbbbbbba,bbbb
+
+- termina com ab
+#Gramática: G = ({S, A}, {a, b}, P, S)
+S -> aS | bS | aA 
+A -> bB
+B -> e
+
+#ex de cadeias para teste: ab,babababab,bbbbbbab
